@@ -1,138 +1,503 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Validation Help</title>
-    <link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/jquery.dataTables.min.css">
-    <style>
-        td.details-control {
-            background: url('https://www.datatables.net/examples/resources/details_open.png') no-repeat center center;
-            cursor: pointer;
-        }
-        tr.shown td.details-control {
-            background: url('https://www.datatables.net/examples/resources/details_close.png') no-repeat center center;
-        }
-        .child-table {
-            margin-left: 40px;
-        }
-    </style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Validation Help</title>
+  <!-- DataTables CSS -->
+  <link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/jquery.dataTables.min.css">
+  <style>
+    td.details-control {
+      background: url('https://www.datatables.net/examples/resources/details_open.png') no-repeat center center;
+      cursor: pointer;
+    }
+    tr.shown td.details-control {
+      background: url('https://www.datatables.net/examples/resources/details_close.png') no-repeat center center;
+    }
+    .child-table {
+      margin-left: 40px;
+    }
+  </style>
 </head>
 <body>
-    <h2>Validation Help Page</h2>
-    <table id="validationTable" class="display" style="width:100%">
-        <thead>
-            <tr>
-                <th></th>
-                <th>Process Name</th>
-                <th>Description</th>
-            </tr>
-        </thead>
-        <tbody>
-            <tr data-method="ValidateWaybill">
-                <td class="details-control"></td>
-                <td>ValidateWaybill</td>
-                <td>Checks validity of waybill fields like WaybillNo, ClientID, and Date.</td>
-            </tr>
-            <tr data-method="ValidateAccruedRevenue">
-                <td class="details-control"></td>
-                <td>ValidateAccruedRevenue</td>
-                <td>Validates revenue recognition and related business rules.</td>
-            </tr>
-            <tr data-method="ValidateExchangeRate">
-                <td class="details-control"></td>
-                <td>ValidateExchangeRate</td>
-                <td>Ensures exchange rate data is present for involved currencies.</td>
-            </tr>
-            <tr data-method="ValidateInvoiceAmount">
-                <td class="details-control"></td>
-                <td>ValidateInvoiceAmount</td>
-                <td>Validates the invoice amount calculations and their accuracy.</td>
-            </tr>
-            <tr data-method="ValidateClient">
-                <td class="details-control"></td>
-                <td>ValidateClient</td>
-                <td>Checks if the client exists and meets all validation criteria.</td>
-            </tr>
-            <tr data-method="ValidatePaymentAmount">
-                <td class="details-control"></td>
-                <td>ValidatePaymentAmount</td>
-                <td>Ensures the payment amount matches the expected values.</td>
-            </tr>
-            <tr data-method="ValidateWaybillCount">
-                <td class="details-control"></td>
-                <td>ValidateWaybillCount</td>
-                <td>Ensures the waybill count is valid for invoicing.</td>
-            </tr>
-        </tbody>
-    </table>
+  <h2>Validation Help Page</h2>
+  <table id="validationTable" class="display" style="width:100%">
+    <thead>
+      <tr>
+        <th></th>
+        <th>Process Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <!-- ValidateWaybill -->
+      <tr data-method="ValidateWaybill">
+        <td class="details-control"></td>
+        <td>ValidateWaybill</td>
+        <td>Verifies waybill details including contract/legal entities, currency, fees, invoice numbers, and more.</td>
+      </tr>
+      <!-- ValidateWaybillcodpayment -->
+      <tr data-method="ValidateWaybillcodpayment">
+        <td class="details-control"></td>
+        <td>ValidateWaybillcodpayment</td>
+        <td>Checks mandatory fields and payment details for COD payments.</td>
+      </tr>
+      <!-- ValidateAccruedRevenue -->
+      <tr data-method="ValidateAccruedRevenue">
+        <td class="details-control"></td>
+        <td>ValidateAccruedRevenue</td>
+        <td>Ensures required fields for accrued revenue are present.</td>
+      </tr>
+      <!-- ValidateCorpRevenue -->
+      <tr data-method="ValidateCorpRevenue">
+        <td class="details-control"></td>
+        <td>ValidateCorpRevenue</td>
+        <td>Validates corporate revenue fields including product type, revenue sum and invoice details.</td>
+      </tr>
+      <!-- ValidateNonCorpRevenue -->
+      <tr data-method="ValidateNonCorpRevenue">
+        <td class="details-control"></td>
+        <td>ValidateNonCorpRevenue</td>
+        <td>Ensures non-corporate revenue records have all mandatory fields.</td>
+      </tr>
+      <!-- ValidateCashCreditNote -->
+      <tr data-method="ValidateCashCreditNote">
+        <td class="details-control"></td>
+        <td>ValidateCashCreditNote</td>
+        <td>Checks required fields for cash/credit note validations.</td>
+      </tr>
+      <!-- ValidateNonCorpPayment -->
+      <tr data-method="ValidateNonCorpPayment">
+        <td class="details-control"></td>
+        <td>ValidateNonCorpPayment</td>
+        <td>Validates non-corporate payment fields and payment mode specific rules.</td>
+      </tr>
+      <!-- ValidateWayBillCashierBankDeposite -->
+      <tr data-method="ValidateWayBillCashierBankDeposite">
+        <td class="details-control"></td>
+        <td>ValidateWayBillCashierBankDeposite</td>
+        <td>Ensures all mandatory fields for bank deposite by cashier are provided.</td>
+      </tr>
+    </tbody>
+  </table>
 
-    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
-    <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
-    <script>
-        const validationDetails = {
-            ValidateWaybill: [
-                { field: "WaybillNo", condition: "Is NULL or empty", message: "Waybill number is required." },
-                { field: "ClientID", condition: "Does not exist in Clients table", message: "Client not found." },
-                { field: "Date", condition: "In the future", message: "Waybill date cannot be in the future." }
-            ],
-            ValidateAccruedRevenue: [
-                { field: "RevenueAmount", condition: "Less than zero", message: "Revenue cannot be negative." },
-                { field: "ClientID", condition: "Missing", message: "Client ID is required for revenue." }
-            ],
-            ValidateExchangeRate: [
-                { field: "TransactionCurrencyID", condition: "Missing", message: "Transaction currency is not set." },
-                { field: "ExchangeRate", condition: "Zero or NULL", message: "Exchange rate must be provided." }
-            ],
-            ValidateInvoiceAmount: [
-                { field: "InvoiceAmount", condition: "Less than zero", message: "Invoice amount cannot be negative." },
-                { field: "InvoiceAmount", condition: "Not equal to expected amount", message: "Invoice amount mismatch." }
-            ],
-            ValidateClient: [
-                { field: "ClientID", condition: "Does not exist", message: "Client is invalid or does not exist." },
-                { field: "ClientStatus", condition: "Inactive", message: "Client is inactive." }
-            ],
-            ValidatePaymentAmount: [
-                { field: "PaymentAmount", condition: "Less than zero", message: "Payment amount cannot be negative." },
-                { field: "PaymentAmount", condition: "Mismatch with invoice", message: "Payment amount does not match the invoice." }
-            ],
-            ValidateWaybillCount: [
-                { field: "WaybillCount", condition: "Zero", message: "Waybill count cannot be zero." },
-                { field: "WaybillCount", condition: "Greater than expected", message: "Waybill count exceeds limit." }
-            ]
-        };
-
-        function format(methodName) {
-            const rows = validationDetails[methodName] || [];
-            let html = `<table class="child-table" cellpadding="5" cellspacing="0" border="0">
-                <thead><tr><th>Field</th><th>Condition</th><th>Error Message</th></tr></thead><tbody>`;
-            rows.forEach(row => {
-                html += `<tr><td>${row.field}</td><td>${row.condition}</td><td>${row.message}</td></tr>`;
-            });
-            html += `</tbody></table>`;
-            return html;
+  <!-- jQuery and DataTables JS -->
+  <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
+  <script>
+    const validationDetails = {
+      ValidateWaybill: [
+        {
+          field: "ContractLegalEntity",
+          condition: "Is NULL or empty AND Billingtype not 'A', 'COD', or 'E'",
+          message: "ContractLegalEntity is null or empty"
+        },
+        {
+          field: "DestinationLegalEntity",
+          condition: "Is NULL or empty",
+          message: "DestinationLegalEntity is null or empty"
+        },
+        {
+          field: "TransactionCurrencyCode",
+          condition: "Is NULL or empty",
+          message: "TransactionCurrencyCode is null or empty"
+        },
+        {
+          field: "CODCurrencyCode",
+          condition: "Is NULL or empty AND Billingtype not 'C' or 'FOD'",
+          message: "CODCurrencyCode is null or empty"
+        },
+        {
+          field: "PickUpBy",
+          condition: "Is NULL or empty",
+          message: "PickUpBy is null or empty"
+        },
+        {
+          field: "DeliveryBy",
+          condition: "Is NULL or empty when DeliveryStatus is 'Delivered' or 'RTO'",
+          message: "DeliveryBy is null or empty"
+        },
+        {
+          field: "DestCountryCurrencyCode",
+          condition: "Is NULL or empty",
+          message: "DestCountryCurrencyCode is null or empty"
+        },
+        {
+          field: "ConsigHandlingFeeCurrencyCode",
+          condition: "For DDU: Is NULL or empty",
+          message: "ConsigHandlingFeeCurrencyCode is null or empty for DDU"
+        },
+        {
+          field: "ConsigHandlingFee",
+          condition: "For DDU: Is NULL or Zero",
+          message: "ConsigHandlingFee is null OR Zero for DDU"
+        },
+        {
+          field: "ConsigHandlingFeeVATAmount",
+          condition: "For DDU: Is NULL or Zero",
+          message: "ConsigHandlingFeeVATAmount is null OR Zero for DDU"
+        },
+        {
+          field: "ConsigHandlingFeeVATPercentage",
+          condition: "For DDU: Is NULL or Zero",
+          message: "ConsigHandlingFeeVATPercentage is null OR Zero for DDU"
+        },
+        {
+          field: "InvoiceNo",
+          condition: "For Corp invoice (Billingtype A, E, COD) when missing",
+          message: "InvoiceNo is null or empty for Corp invoice"
+        },
+        {
+          field: "ConsigneeInvoiceNo",
+          condition: "For NonCorp invoice (Billingtype C, FOD or A with DDU) when missing",
+          message: "ConsigneeInvoiceNo is null or empty for NonCorp invoice"
+        },
+        {
+          field: "CustomsChargesDate",
+          condition: "If CustomsChargesDetailStatus is 'Active' and value is NULL",
+          message: "CustomsChargesDate is null for active bayan"
+        },
+        {
+          field: "CCDClientID",
+          condition: "If CustomsChargesDetailStatus is 'Active' and value is NULL",
+          message: "CCDClientID is null for active bayan"
+        },
+        {
+          field: "SadadNumber",
+          condition: "For paid SADAD: Is NULL or empty",
+          message: "SadadNumber is null or empty for paid SADAD"
+        },
+        {
+          field: "CustomDutyVATReportID",
+          condition: "For paid SADAD: Is NULL",
+          message: "CustomDutyVATReportID is null for paid SADAD"
+        },
+        {
+          field: "DNInvoiced",
+          condition: "For paid SADAD: Is NULL",
+          message: "DNInvoiced is null for paid SADAD"
+        },
+        {
+          field: "SADADPaymentDate",
+          condition: "For paid SADAD: Is NULL",
+          message: "SADADPaymentDate is null for paid SADAD"
+        },
+        {
+          field: "SadadBankLegalEntity",
+          condition: "For paid SADAD: Is NULL or empty",
+          message: "SadadBankLegalEntity is null or empty for paid SADAD"
+        },
+        {
+          field: "SadadBankRefID",
+          condition: "For paid SADAD: Is NULL",
+          message: "SadadBankRefID is null for paid SADAD"
+        },
+        {
+          field: "CCDVendorID",
+          condition: "For paid SADAD: Is NULL",
+          message: "CCDVendorID is null for paid SADAD"
+        },
+        {
+          field: "CCDBankID",
+          condition: "For paid SADAD: Is NULL",
+          message: "CCDBankID is null for paid SADAD"
+        },
+        {
+          field: "VendorIDLegalentity",
+          condition: "VendorID exists but VendorIDLegalentity is NULL",
+          message: "VendorIDLegalentity is null for COD by Vendor"
+        },
+        {
+          field: "EmployeeLegalentity",
+          condition: "If EmployeeID != '0' and DeliveryBy equals EmployeeID and value is NULL/empty",
+          message: "EmployeeLegalentity is null or empty for delivery by Employee"
+        },
+        {
+          field: "CNissued",
+          condition: "CNissued flag is not set correctly",
+          message: "CNissued flag is not set correctly"
+        },
+        {
+          field: "AccuredRevenueGenerated",
+          condition: "Is NULL",
+          message: "AccuredRevenueGenerated is null"
+        },
+        {
+          field: "IsNonCorpCollected",
+          condition: "Is NULL",
+          message: "IsNonCorpCollected is null"
+        },
+        {
+          field: "SalesManID",
+          condition: "Is NULL",
+          message: "INVOICESALESMANID (client salesman ID) is null"
         }
+      ],
+      ValidateWaybillcodpayment: [
+        {
+          field: "BillingType",
+          condition: "Must be 'COD'",
+          message: "BillingType must be COD"
+        },
+        {
+          field: "Currency",
+          condition: "Is NULL or empty",
+          message: "Currency is missing"
+        },
+        {
+          field: "EnteredBy",
+          condition: "Is NULL or empty",
+          message: "EnteredBy is missing"
+        },
+        {
+          field: "PaymentAmount",
+          condition: "Must be provided and > 0",
+          message: "PaymentAmount should be greater than zero / is missing"
+        },
+        {
+          field: "POSNumber",
+          condition: "For PaymentMode 3: Is NULL or empty",
+          message: "POSNumber is missing for POS payment"
+        },
+        {
+          field: "BankID",
+          condition: "For PaymentMode 7 or 17: Is missing or zero",
+          message: "BankID is missing or zero for Bank transfer/Gateway payment"
+        },
+        {
+          field: "BankLegalEntity",
+          condition: "For PaymentMode 7 or 17: Is NULL or empty",
+          message: "BankLegalEntity is missing for Bank transfer/Gateway payment"
+        },
+        {
+          field: "DeliveredByEMPLegalentity",
+          condition: "Is NULL or empty",
+          message: "DeliveredByEMPLegalentity is missing"
+        },
+        {
+          field: "EnteredByEMPLegalEntity",
+          condition: "Is NULL or empty",
+          message: "EnteredByEMPLegalEntity is missing"
+        },
+        {
+          field: "VendorID",
+          condition: "If exists and is NULL",
+          message: "VendorID is missing"
+        }
+      ],
+      ValidateAccruedRevenue: [
+        {
+          field: "WaybillNo",
+          condition: "Is NULL or empty",
+          message: "WaybillNo is missing"
+        },
+        {
+          field: "InvoiceAccount",
+          condition: "Is NULL or empty",
+          message: "InvoiceAccount is missing"
+        }
+      ],
+      ValidateCorpRevenue: [
+        {
+          field: "ProductType",
+          condition: "Is NULL or empty",
+          message: "ProductType is missing"
+        },
+        {
+          field: "RevenueSum",
+          condition: "Is NULL or <= 0",
+          message: "RevenueSum is missing or not lesser than zero or mismatch"
+        },
+        {
+          field: "InvoiceNo",
+          condition: "Is NULL or empty",
+          message: "InvoiceNo is missing"
+        },
+        {
+          field: "AXLegalEntity",
+          condition: "Is NULL or empty",
+          message: "AXLegalEntity is missing"
+        },
+        {
+          field: "InvoiceCurrency",
+          condition: "Is NULL or empty",
+          message: "InvoiceCurrency is missing"
+        },
+        {
+          field: "CountryCurrency",
+          condition: "Is NULL or empty",
+          message: "CountryCurrency is missing"
+        }
+      ],
+      ValidateNonCorpRevenue: [
+        {
+          field: "InvoiceNo",
+          condition: "Is NULL or empty",
+          message: "InvoiceNo is missing"
+        },
+        {
+          field: "ProductType",
+          condition: "Is NULL or empty",
+          message: "ProductType is missing"
+        },
+        {
+          field: "WaybillNoDept",
+          condition: "Is NULL or empty",
+          message: "WaybillNoDept is missing"
+        },
+        {
+          field: "RevenueSum",
+          condition: "Is NULL or <= 0",
+          message: "RevenueSum is missing or not lesser than zero or mismatch"
+        },
+        {
+          field: "InvoiceCurrency",
+          condition: "Is NULL or empty",
+          message: "InvoiceCurrency is missing"
+        }
+      ],
+      ValidateCashCreditNote: [
+        {
+          field: "PaymentNo",
+          condition: "Is NULL or empty",
+          message: "PaymentNo is missing"
+        },
+        {
+          field: "WaybillNo",
+          condition: "Is NULL or empty",
+          message: "WaybillNo is missing"
+        },
+        {
+          field: "Currency",
+          condition: "Is NULL or empty",
+          message: "Currency is missing"
+        },
+        {
+          field: "EnteredBy",
+          condition: "Is NULL or empty",
+          message: "EnteredBy is missing"
+        }
+      ],
+      ValidateNonCorpPayment: [
+        {
+          field: "WaybillNo",
+          condition: "Is NULL or empty",
+          message: "WaybillNo is missing"
+        },
+        {
+          field: "EnteredByEMPLegalEntity",
+          condition: "Is NULL or empty",
+          message: "EnteredByEMPLegalEntity is missing"
+        },
+        {
+          field: "Currency",
+          condition: "Is NULL or empty",
+          message: "Currency is missing"
+        },
+        {
+          field: "EnteredBy",
+          condition: "Is NULL or empty",
+          message: "EnteredBy is missing"
+        },
+        {
+          field: "POSNumber",
+          condition: "For PaymentMode 3: Is NULL or empty",
+          message: "POSNumber is missing for POS payment"
+        },
+        {
+          field: "BankID",
+          condition: "For PaymentMode 7/17: Is missing or zero",
+          message: "BankID is missing or zero for Bank transfer/Gateway payment"
+        },
+        {
+          field: "BankLegalEntity",
+          condition: "For PaymentMode 7/17: Is NULL or empty",
+          message: "BankLegalEntity is missing for Bank transfer/Gateway payment"
+        }
+      ],
+      ValidateWayBillCashierBankDeposite: [
+        {
+          field: "WaybillNo",
+          condition: "Is NULL or empty",
+          message: "WaybillNo is missing"
+        },
+        {
+          field: "DepositeAmount",
+          condition: "Is NULL or <= 0",
+          message: "DepositeAmount is missing or not greater than zero"
+        },
+        {
+          field: "EmployID",
+          condition: "Is NULL or empty",
+          message: "EmployID is missing"
+        },
+        {
+          field: "DepositeBy",
+          condition: "Is NULL or empty",
+          message: "DepositeBy is missing"
+        },
+        {
+          field: "BankID",
+          condition: "Is NULL or <= 0",
+          message: "BankID is missing or invalid"
+        },
+        {
+          field: "BankLegalEntity",
+          condition: "Is NULL or empty",
+          message: "BankLegalEntity is missing"
+        },
+        {
+          field: "DepositeByEMPLegalEntity",
+          condition: "Is NULL or empty",
+          message: "DepositeByEMPLegalEntity is missing"
+        }
+      ]
+    };
 
-        $(document).ready(function () {
-            const table = $('#validationTable').DataTable({
-                paging: false,
-                info: false
-            });
+    // Helper function to format details for a given method.
+    function format(methodName) {
+      const rows = validationDetails[methodName] || [];
+      let html = `<table class="child-table" cellpadding="5" cellspacing="0" border="0">
+        <thead>
+          <tr>
+            <th>Field</th>
+            <th>Condition</th>
+            <th>Error Message</th>
+          </tr>
+        </thead>
+        <tbody>`;
+      rows.forEach(row => {
+        html += `<tr>
+          <td>${row.field}</td>
+          <td>${row.condition}</td>
+          <td>${row.message}</td>
+        </tr>`;
+      });
+      html += `</tbody></table>`;
+      return html;
+    }
 
-            $('#validationTable tbody').on('click', 'td.details-control', function () {
-                const tr = $(this).closest('tr');
-                const row = table.row(tr);
-                const method = tr.data('method');
+    $(document).ready(function () {
+      const table = $('#validationTable').DataTable({
+        paging: false,
+        info: false
+      });
 
-                if (row.child.isShown()) {
-                    row.child.hide();
-                    tr.removeClass('shown');
-                } else {
-                    row.child(format(method)).show();
-                    tr.addClass('shown');
-                }
-            });
-        });
-    </script>
+      // Toggle row details on click.
+      $('#validationTable tbody').on('click', 'td.details-control', function () {
+        const tr = $(this).closest('tr');
+        const row = table.row(tr);
+        const method = tr.data('method');
+
+        if (row.child.isShown()) {
+          row.child.hide();
+          tr.removeClass('shown');
+        } else {
+          row.child(format(method)).show();
+          tr.addClass('shown');
+        }
+      });
+    });
+  </script>
 </body>
 </html>
