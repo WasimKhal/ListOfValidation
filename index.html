@@ -1,39 +1,138 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Multicurrency Available Validation </title>
-  <!-- Bootstrap CSS -->
-  <link
-    href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css"
-    rel="stylesheet"
-  />
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Validation Help</title>
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/jquery.dataTables.min.css">
+    <style>
+        td.details-control {
+            background: url('https://www.datatables.net/examples/resources/details_open.png') no-repeat center center;
+            cursor: pointer;
+        }
+        tr.shown td.details-control {
+            background: url('https://www.datatables.net/examples/resources/details_close.png') no-repeat center center;
+        }
+        .child-table {
+            margin-left: 40px;
+        }
+    </style>
 </head>
-<body class="bg-light">
+<body>
+    <h2>Validation Help Page</h2>
+    <table id="validationTable" class="display" style="width:100%">
+        <thead>
+            <tr>
+                <th></th>
+                <th>Process Name</th>
+                <th>Description</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr data-method="ValidateWaybill">
+                <td class="details-control"></td>
+                <td>ValidateWaybill</td>
+                <td>Checks validity of waybill fields like WaybillNo, ClientID, and Date.</td>
+            </tr>
+            <tr data-method="ValidateAccruedRevenue">
+                <td class="details-control"></td>
+                <td>ValidateAccruedRevenue</td>
+                <td>Validates revenue recognition and related business rules.</td>
+            </tr>
+            <tr data-method="ValidateExchangeRate">
+                <td class="details-control"></td>
+                <td>ValidateExchangeRate</td>
+                <td>Ensures exchange rate data is present for involved currencies.</td>
+            </tr>
+            <tr data-method="ValidateInvoiceAmount">
+                <td class="details-control"></td>
+                <td>ValidateInvoiceAmount</td>
+                <td>Validates the invoice amount calculations and their accuracy.</td>
+            </tr>
+            <tr data-method="ValidateClient">
+                <td class="details-control"></td>
+                <td>ValidateClient</td>
+                <td>Checks if the client exists and meets all validation criteria.</td>
+            </tr>
+            <tr data-method="ValidatePaymentAmount">
+                <td class="details-control"></td>
+                <td>ValidatePaymentAmount</td>
+                <td>Ensures the payment amount matches the expected values.</td>
+            </tr>
+            <tr data-method="ValidateWaybillCount">
+                <td class="details-control"></td>
+                <td>ValidateWaybillCount</td>
+                <td>Ensures the waybill count is valid for invoicing.</td>
+            </tr>
+        </tbody>
+    </table>
 
-  <div class="container mt-5">
-    <h1 class="text-center text-primary">Multicurrrency List of Available validation</h1>
-    <!-- <p class="text-center">Available Validation!</p> -->
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+    <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
+    <script>
+        const validationDetails = {
+            ValidateWaybill: [
+                { field: "WaybillNo", condition: "Is NULL or empty", message: "Waybill number is required." },
+                { field: "ClientID", condition: "Does not exist in Clients table", message: "Client not found." },
+                { field: "Date", condition: "In the future", message: "Waybill date cannot be in the future." }
+            ],
+            ValidateAccruedRevenue: [
+                { field: "RevenueAmount", condition: "Less than zero", message: "Revenue cannot be negative." },
+                { field: "ClientID", condition: "Missing", message: "Client ID is required for revenue." }
+            ],
+            ValidateExchangeRate: [
+                { field: "TransactionCurrencyID", condition: "Missing", message: "Transaction currency is not set." },
+                { field: "ExchangeRate", condition: "Zero or NULL", message: "Exchange rate must be provided." }
+            ],
+            ValidateInvoiceAmount: [
+                { field: "InvoiceAmount", condition: "Less than zero", message: "Invoice amount cannot be negative." },
+                { field: "InvoiceAmount", condition: "Not equal to expected amount", message: "Invoice amount mismatch." }
+            ],
+            ValidateClient: [
+                { field: "ClientID", condition: "Does not exist", message: "Client is invalid or does not exist." },
+                { field: "ClientStatus", condition: "Inactive", message: "Client is inactive." }
+            ],
+            ValidatePaymentAmount: [
+                { field: "PaymentAmount", condition: "Less than zero", message: "Payment amount cannot be negative." },
+                { field: "PaymentAmount", condition: "Mismatch with invoice", message: "Payment amount does not match the invoice." }
+            ],
+            ValidateWaybillCount: [
+                { field: "WaybillCount", condition: "Zero", message: "Waybill count cannot be zero." },
+                { field: "WaybillCount", condition: "Greater than expected", message: "Waybill count exceeds limit." }
+            ]
+        };
 
-    <div class="text-center">
-      <button id="clickMe" class="btn btn-success">Click Me</button>
-    </div>
+        function format(methodName) {
+            const rows = validationDetails[methodName] || [];
+            let html = `<table class="child-table" cellpadding="5" cellspacing="0" border="0">
+                <thead><tr><th>Field</th><th>Condition</th><th>Error Message</th></tr></thead><tbody>`;
+            rows.forEach(row => {
+                html += `<tr><td>${row.field}</td><td>${row.condition}</td><td>${row.message}</td></tr>`;
+            });
+            html += `</tbody></table>`;
+            return html;
+        }
 
-    <p id="output" class="text-center mt-3 text-secondary"></p>
-  </div>
+        $(document).ready(function () {
+            const table = $('#validationTable').DataTable({
+                paging: false,
+                info: false
+            });
 
-  <!-- jQuery -->
-  <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
-  <!-- Bootstrap JS -->
-  <script
-    src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"
-  ></script>
+            $('#validationTable tbody').on('click', 'td.details-control', function () {
+                const tr = $(this).closest('tr');
+                const row = table.row(tr);
+                const method = tr.data('method');
 
-  <script>
-    $('#clickMe').click(function () {
-      $('#output').text('You clicked the button!');
-    });
-  </script>
+                if (row.child.isShown()) {
+                    row.child.hide();
+                    tr.removeClass('shown');
+                } else {
+                    row.child(format(method)).show();
+                    tr.addClass('shown');
+                }
+            });
+        });
+    </script>
 </body>
 </html>
